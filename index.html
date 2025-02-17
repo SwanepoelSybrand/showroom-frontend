@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showroom AI Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        #chatbox { width: 400px; height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin: auto; }
+        input, button { margin-top: 10px; padding: 10px; width: 80%; }
+    </style>
+</head>
+<body>
+    <h1>Showroom AI Chatbot</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Ask about a vehicle...">
+    <button onclick="sendMessage()">Send</button>
+    
+    <h2>Contact Sales</h2>
+    <input type="text" id="name" placeholder="Your Name">
+    <input type="email" id="email" placeholder="Your Email">
+    <textarea id="message" placeholder="Your Inquiry"></textarea>
+    <button onclick="sendEmail()">Send Inquiry</button>
+    
+    <script>
+        async function sendMessage() {
+            let userText = document.getElementById("userInput").value;
+            if (!userText) return;
+
+            let chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
+
+            let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userText })
+            });
+
+            let data = await response.json();
+            let botReply = data.choices[0].message.content;
+
+            chatbox.innerHTML += `<p><strong>Bot:</strong> ${botReply}</p>`;
+            document.getElementById("userInput").value = "";
+        }
+
+        async function sendEmail() {
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let message = document.getElementById("message").value;
+            
+            if (!name || !email || !message) {
+                alert("Please fill in all fields.");
+                return;
+            }
+            
+            let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/send-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, message })
+            });
+
+            let result = await response.json();
+            if (result.success) {
+                alert("Inquiry sent successfully!");
+            } else {
+                alert("Failed to send inquiry. Try again.");
+            }
+        }
+    </script>
+</body>
+</html>
