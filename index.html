@@ -41,7 +41,7 @@
             let data = await response.json();
             let botReply = data.choices[0].message.content;
 
-            chatbox.innerHTML += `<p><strong>Bot:</strong> ${botReply}</p>`;
+            chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
             document.getElementById("userInput").value = "";
         }
 
