@@ -11,63 +11,79 @@
     </style>
 </head>
 <body>
-        <!-- Banner Image -->
+
+    <!-- Banner Image -->
     <img src="assets/ford.jpeg" alt="Showroom Banner" id="banner">
     <h1>Human Motors Welkom Showroom</h1>
+
     <div id="chatbox"></div>
     <input type="text" id="userInput" placeholder="Ask about a vehicle...">
     <button onclick="sendMessage()">Send</button>
-    
+
     <h2>Contact Sales</h2>
     <input type="text" id="name" placeholder="Your Name">
     <input type="email" id="email" placeholder="Your Email">
     <textarea id="message" placeholder="Your Inquiry" rows="4" cols="40"></textarea>
     <button onclick="sendEmail()">Send Inquiry</button>
-    
+
     <script>
         async function sendMessage() {
-            let userText = document.getElementById("userInput").value;
+            let userText = document.getElementById("userInput").value.trim();
             if (!userText) return;
 
             let chatbox = document.getElementById("chatbox");
             chatbox.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
 
-            let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: userText })
-            });
+            try {
+                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  // <-- Correct endpoint
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userText })
+                });
 
-            let data = await response.json();
-            let botReply = data.choices[0].message.content;
+                let data = await response.json();
+                let botReply = data.reply;  // <-- Correct JSON parsing
 
-            chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
+                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;  // Auto-scroll to latest message
+            } catch (error) {
+                chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
+                console.error("Fetch error:", error);
+            }
+
             document.getElementById("userInput").value = "";
         }
 
         async function sendEmail() {
-            let name = document.getElementById("name").value;
-            let email = document.getElementById("email").value;
-            let message = document.getElementById("message").value;
-            
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let message = document.getElementById("message").value.trim();
+
             if (!name || !email || !message) {
                 alert("Please fill in all fields.");
                 return;
             }
-            
-            let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/send-email", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, message })
-            });
 
-            let result = await response.json();
-            if (result.success) {
-                alert("Inquiry sent successfully!");
-            } else {
-                alert("Failed to send inquiry. Try again.");
+            try {
+                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/send-email", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, message })
+                });
+
+                let result = await response.json();
+                if (result.success) {
+                    alert("Inquiry sent successfully!");
+                } else {
+                    alert("Failed to send inquiry. Try again.");
+                }
+            } catch (error) {
+                alert("Error sending inquiry. Please try again.");
+                console.error("Fetch error:", error);
             }
         }
     </script>
+
 </body>
 </html>
+
