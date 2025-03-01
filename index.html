@@ -27,6 +27,26 @@
     <button onclick="sendEmail()">Send Inquiry</button>
 
     <script>
+        window.onload = async function() {
+            let chatbox = document.getElementById("chatbox");
+
+            try {
+                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: "greet" })  // Send "greet" to trigger a welcome message
+                });
+
+                let data = await response.json();
+                let botReply = data.reply;
+
+                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
+            } catch (error) {
+                chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
+                console.error("Fetch error:", error);
+            }
+        };
+
         async function sendMessage() {
             let userText = document.getElementById("userInput").value.trim();
             if (!userText) return;
@@ -35,17 +55,17 @@
             chatbox.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
 
             try {
-                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  // <-- Correct endpoint
+                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: userText })
                 });
 
                 let data = await response.json();
-                let botReply = data.reply;  // <-- Correct JSON parsing
+                let botReply = data.reply;
 
                 chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
-                chatbox.scrollTop = chatbox.scrollHeight;  // Auto-scroll to latest message
+                chatbox.scrollTop = chatbox.scrollHeight;
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
                 console.error("Fetch error:", error);
@@ -86,4 +106,5 @@
 
 </body>
 </html>
+
 
