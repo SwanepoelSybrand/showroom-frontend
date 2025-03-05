@@ -5,31 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Human Motors Welkom</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
-        #chatbox { width: 400px; height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin: auto; }
-        input, button { margin-top: 10px; padding: 10px; width: 80%; }
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
+        
+        /* Full Screen Layout */
+        #avatar-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Robot Avatar Styling */
+        #robot-avatar {
+            width: 100%;
+            height: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Mouth (for interaction animation) */
+        #mouth {
+            width: 50px;
+            height: 20px;
+            background-color: black;
+            margin-top: 10px;
+            border-radius: 5px;
+            transition: transform 0.3s;
+        }
+
+        /* Chest Area (for vehicle name/branding) */
+        #chest {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+        }
+
+        #logo {
+            width: 60px;
+            margin-bottom: 10px;
+        }
+
+        #name {
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Chat Box for Vehicle Interaction */
+        #chatbox {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Hide Input Fields and Contact Form */
+        input, textarea, button {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Banner Image -->
-    <img src="assets/ford.jpeg" alt="Showroom Banner" id="banner">
-    <h1>Human Motors Welkom Showroom</h1>
+    <!-- Avatar Container -->
+    <div id="avatar-container" onclick="interactWithAvatar()">
+        <div id="robot-avatar">
+            <div id="mouth" class="closed"></div>
+            <div id="chest">
+                <img src="assets/ford-logo.png" alt="Ford Logo" id="logo" />
+                <p id="name">Human Motors</p>
+            </div>
+        </div>
+    </div>
 
+    <!-- Chat Box for interaction -->
     <div id="chatbox"></div>
-    <input type="text" id="userInput" placeholder="Ask about a vehicle...">
-    <button onclick="sendMessage()">Send</button>
-
-    <h2>Contact Sales</h2>
-    <input type="text" id="name" placeholder="Your Name">
-    <input type="email" id="email" placeholder="Your Email">
-    <textarea id="message" placeholder="Your Inquiry" rows="4" cols="40"></textarea>
-    <button onclick="sendEmail()">Send Inquiry</button>
 
     <script>
         window.onload = async function() {
             let chatbox = document.getElementById("chatbox");
 
+            // Greet User Initially
             try {
                 let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
                     method: "POST",
@@ -41,64 +113,35 @@
                 let botReply = data.reply;
 
                 chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
+                chatbox.style.display = 'block';  // Show the chat box
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
                 console.error("Fetch error:", error);
             }
         };
 
-        async function sendMessage() {
-            let userText = document.getElementById("userInput").value.trim();
-            if (!userText) return;
-
+        async function interactWithAvatar() {
             let chatbox = document.getElementById("chatbox");
-            chatbox.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
+            const mouth = document.getElementById("mouth");
 
+            // Toggle mouth opening animation
+            mouth.classList.toggle('open');
+            
+            // Send message to backend when avatar is clicked
             try {
                 let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: userText })
+                    body: JSON.stringify({ message: 'list please' })  // Request vehicle list
                 });
 
                 let data = await response.json();
                 let botReply = data.reply;
 
                 chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
-                chatbox.scrollTop = chatbox.scrollHeight;
+                chatbox.style.display = 'block';  // Show chat box
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
-                console.error("Fetch error:", error);
-            }
-
-            document.getElementById("userInput").value = "";
-        }
-
-        async function sendEmail() {
-            let name = document.getElementById("name").value.trim();
-            let email = document.getElementById("email").value.trim();
-            let message = document.getElementById("message").value.trim();
-
-            if (!name || !email || !message) {
-                alert("Please fill in all fields.");
-                return;
-            }
-
-            try {
-                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/send-email", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, message })
-                });
-
-                let result = await response.json();
-                if (result.success) {
-                    alert("Inquiry sent successfully!");
-                } else {
-                    alert("Failed to send inquiry. Try again.");
-                }
-            } catch (error) {
-                alert("Error sending inquiry. Please try again.");
                 console.error("Fetch error:", error);
             }
         }
@@ -106,5 +149,3 @@
 
 </body>
 </html>
-
-
