@@ -15,20 +15,6 @@
         }
         
         /* Full Screen Layout */
-        #avatar-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 400px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        /* Chat Box for Vehicle Interaction */
         #chatbox {
             position: fixed;
             bottom: 60px;
@@ -70,10 +56,9 @@
     </style>
 </head>
 <body>
-    <!-- Chat Box for interaction -->
+
     <div id="chatbox"></div>
 
-    <!-- Input Field at Bottom -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
     </div>
@@ -101,6 +86,7 @@
         async function sendMessage() {
             let inputField = document.getElementById("user-input");
             let chatbox = document.getElementById("chatbox");
+
             let userMessage = inputField.value.trim();
             if (userMessage === "") return;
 
@@ -115,7 +101,12 @@
                 });
 
                 let data = await response.json();
-                chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply}</p>`;
+                if (userMessage.toLowerCase() === "list please") {
+                    let vehicles = data.reply.split("\n").map(vehicle => `<li>${vehicle}</li>`).join(" ");
+                    chatbox.innerHTML += `<strong>Mary:</strong><ul>${vehicles}</ul>`;
+                } else {
+                    chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply}</p>`;
+                }
                 chatbox.scrollTop = chatbox.scrollHeight;
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
@@ -131,6 +122,6 @@
             }
         }
     </script>
+
 </body>
 </html>
-
