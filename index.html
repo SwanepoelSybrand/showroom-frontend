@@ -41,38 +41,10 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Mouth (for interaction animation) */
-        #mouth {
-            width: 50px;
-            height: 20px;
-            background-color: black;
-            margin-top: 10px;
-            border-radius: 5px;
-            transition: transform 0.3s;
-        }
-
-        /* Chest Area (for vehicle name/branding) */
-        #chest {
-            position: absolute;
-            top: 20px;
-            text-align: center;
-        }
-
-        #logo {
-            width: 60px;
-            margin-bottom: 10px;
-        }
-
-        #name {
-            font-size: 16px;
-            color: white;
-            font-weight: bold;
-        }
-
         /* Chat Box for Vehicle Interaction */
         #chatbox {
             position: fixed;
-            bottom: 60px; /* Leaves space for the input field */
+            bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
@@ -108,26 +80,12 @@
             font-size: 16px;
             border-radius: 25px;
         }
-
     </style>
 </head>
 <body>
 
-    <!-- Avatar Container -->
-    <div id="avatar-container" onclick="interactWithAvatar()">
-        <div id="robot-avatar">
-            <div id="mouth" class="closed"></div>
-            <div id="chest">
-                <img src="assets/ford-logo.png" alt="Ford Logo" id="logo" />
-                <p id="name">Human Motors</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chat Box for interaction -->
     <div id="chatbox"></div>
 
-    <!-- Input Field at Bottom -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
     </div>
@@ -136,19 +94,18 @@
         window.onload = async function() {
             let chatbox = document.getElementById("chatbox");
 
-            // Greet User Initially
             try {
                 let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "greet" })  // Send "greet" to trigger a welcome message
+                    body: JSON.stringify({ message: "greet" })
                 });
 
                 let data = await response.json();
                 let botReply = data.reply;
 
                 chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
-                chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+                chatbox.scrollTop = chatbox.scrollHeight;
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
                 console.error("Fetch error:", error);
@@ -158,19 +115,19 @@
         async function interactWithAvatar() {
             let chatbox = document.getElementById("chatbox");
 
-            // Send message to backend when avatar is clicked
             try {
                 let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: 'list please' })  // Request vehicle list
+                    body: JSON.stringify({ message: 'list please' })
                 });
 
                 let data = await response.json();
                 let botReply = data.reply;
 
-                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
-                chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+                let vehicleList = botReply.split("\n").map((vehicle, index) => `<li>${index + 1}. ${vehicle}</li>`).join("");
+                chatbox.innerHTML += `<p><strong>Mary:</strong></p><ul style='text-align: left; padding-left: 20px;'>${vehicleList}</ul>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
                 console.error("Fetch error:", error);
@@ -184,11 +141,9 @@
             let userMessage = inputField.value.trim();
             if (userMessage === "") return;
 
-            // Display user message
             chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
-            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+            chatbox.scrollTop = chatbox.scrollHeight;
 
-            // Send message to backend
             try {
                 let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
                     method: "POST",
@@ -199,14 +154,18 @@
                 let data = await response.json();
                 let botReply = data.reply;
 
-                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
-                chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+                if (userMessage.toLowerCase().includes("list")) {
+                    let vehicleList = botReply.split("\n").map((vehicle, index) => `<li>${index + 1}. ${vehicle}</li>`).join("");
+                    chatbox.innerHTML += `<p><strong>Mary:</strong></p><ul style='text-align: left; padding-left: 20px;'>${vehicleList}</ul>`;
+                } else {
+                    chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
+                }
+                chatbox.scrollTop = chatbox.scrollHeight;
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
                 console.error("Fetch error:", error);
             }
 
-            // Clear input field
             inputField.value = "";
         }
 
@@ -216,6 +175,6 @@
             }
         }
     </script>
-
 </body>
 </html>
+
