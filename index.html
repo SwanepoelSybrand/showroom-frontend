@@ -53,11 +53,38 @@
             font-size: 16px;
             border-radius: 25px;
         }
+
+        /* List of Cars */
+        #car-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        #car-list li {
+            background-color: #333;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="chatbox"></div>
+    <div id="chatbox">
+        <!-- Car List -->
+        <ul id="car-list">
+            <li>Ford Mustang</li>
+            <li>Ford Focus</li>
+            <li>Ford F-150</li>
+            <li>Ford Fiesta</li>
+            <li>Ford Explorer</li>
+            <li>Ford Puma</li>
+            <!-- Add more cars here -->
+        </ul>
+    </div>
 
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
@@ -65,66 +92,65 @@
 
     <script>
         window.onload = async function() {
-    let chatbox = document.getElementById("chatbox");
+            let chatbox = document.getElementById("chatbox");
 
-    // Greet User Initially
-    try {
-        let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: "greet" })  // Send "greet" to trigger a welcome message
-        });
+            // Greet User Initially
+            try {
+                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: "greet" })  // Send "greet" to trigger a welcome message
+                });
 
-        let data = await response.json();
-        let botReply = data.reply;
+                let data = await response.json();
+                let botReply = data.reply;
 
-        chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`; // ✅ Fixed interpolation
-        chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
-    } catch (error) {
-        chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
-        console.error("Fetch error:", error);
-    }
-};
+                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`; // ✅ Fixed interpolation
+                chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+            } catch (error) {
+                chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
+                console.error("Fetch error:", error);
+            }
+        };
 
-async function sendMessage() {
-    let inputField = document.getElementById("user-input");
-    let chatbox = document.getElementById("chatbox");
+        async function sendMessage() {
+            let inputField = document.getElementById("user-input");
+            let chatbox = document.getElementById("chatbox");
 
-    let userMessage = inputField.value.trim();
-    if (userMessage === "") return;
+            let userMessage = inputField.value.trim();
+            if (userMessage === "") return;
 
-    // Display user message
-    chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`; // ✅ Fixed interpolation
-    chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+            // Display user message
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`; // ✅ Fixed interpolation
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
 
-    // Send message to backend
-    try {
-        let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: userMessage })
-        });
+            // Send message to backend
+            try {
+                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userMessage })
+                });
 
-        let data = await response.json();
-        let botReply = data.reply;
+                let data = await response.json();
+                let botReply = data.reply;
 
-        chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`; // ✅ Fixed interpolation
-        chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
-    } catch (error) {
-        chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
-        console.error("Fetch error:", error);
-    }
+                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`; // ✅ Fixed interpolation
+                chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+            } catch (error) {
+                chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
+                console.error("Fetch error:", error);
+            }
 
-    // Clear input field
-    inputField.value = "";
-}
+            // Clear input field
+            inputField.value = "";
+        }
 
-function handleKeyPress(event) {
-    if (event.key === "Enter") {
-        sendMessage();
-    }
-}
-
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
     </script>
 
 </body>
