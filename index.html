@@ -74,16 +74,7 @@
 <body>
 
     <div id="chatbox">
-        <!-- Car List -->
-        <ul id="car-list">
-            <li>Ford Mustang</li>
-            <li>Ford Focus</li>
-            <li>Ford F-150</li>
-            <li>Ford Fiesta</li>
-            <li>Ford Explorer</li>
-            <li>Ford Puma</li>
-            <!-- Add more cars here -->
-        </ul>
+        <!-- The chatbox will be dynamically updated with car lists -->
     </div>
 
     <div id="input-container">
@@ -96,7 +87,7 @@
 
             // Greet User Initially
             try {
-                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
+                let response = await fetch("http://localhost:5000/message", {  // Change to your backend URL
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: "greet" })  // Send "greet" to trigger a welcome message
@@ -104,8 +95,7 @@
 
                 let data = await response.json();
                 let botReply = data.reply;
-
-                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`; // ✅ Fixed interpolation
+                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
                 chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
@@ -121,12 +111,12 @@
             if (userMessage === "") return;
 
             // Display user message
-            chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`; // ✅ Fixed interpolation
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
             chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
 
             // Send message to backend
             try {
-                let response = await fetch("https://chatgpt-backend-3o3a.onrender.com/message", {  
+                let response = await fetch("http://localhost:5000/message", {  // Change to your backend URL
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: userMessage })
@@ -135,8 +125,18 @@
                 let data = await response.json();
                 let botReply = data.reply;
 
-                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`; // ✅ Fixed interpolation
+                // Display bot's reply
+                chatbox.innerHTML += `<p><strong>Mary:</strong> ${botReply}</p>`;
                 chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+
+                // If the bot reply contains vehicle list, add it to the chatbox
+                if (botReply.includes("We have these available vehicles:")) {
+                    let vehicleList = data.reply.slice(1, -1);  // Get the vehicle list part
+                    vehicleList.forEach(vehicle => {
+                        chatbox.innerHTML += `<p><strong>Mary:</strong> ${vehicle}</p>`;
+                    });
+                    chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+                }
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server. Please try again.</p>`;
                 console.error("Fetch error:", error);
