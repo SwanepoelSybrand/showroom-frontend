@@ -104,7 +104,7 @@
             chatbox.scrollTop = chatbox.scrollHeight;
 
             try {
-                let response = await fetch("http://localhost:5000/message", {
+                let response = await fetch("https://foton-server.onrender.com/message", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: userMessage })
