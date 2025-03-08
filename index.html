@@ -79,6 +79,18 @@
             outline: none;
             font-size: 16px;
         }
+
+        .mic-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            margin-left: 10px;
+        }
+
+        .mic-button.recording {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +108,7 @@
     <!-- Input Field -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button class="mic-button" id="mic-button" onclick="startVoiceRecording()">🎤</button>
     </div>
 
     <script>
@@ -110,58 +123,57 @@
         let currentIndex = 0;
         let carButton = document.getElementById("car-button");
         let selectedVehicle = images[0].name; // Default to first vehicle
+        let isVoiceMessage = false;
 
         function prevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
             carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
-            selectedVehicle = images[currentIndex].name; // Update selected vehicle
+            selectedVehicle = images[currentIndex].name;
         }
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
             carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
-            selectedVehicle = images[currentIndex].name; // Update selected vehicle
+            selectedVehicle = images[currentIndex].name;
         }
 
-        // Assign vehicle when clicking on the image
-        carButton.addEventListener("click", function() {
-            console.log("Selected vehicle:", selectedVehicle);
-        });
+        function startVoiceRecording() {
+            let micButton = document.getElementById("mic-button");
+            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
 
-        async function sendMessage() {
-            let inputField = document.getElementById("user-input");
-            let chatbox = document.getElementById("chatbox");
-            let userMessage = inputField.value.trim();
-            if (userMessage === "") return;
+            recognition.onstart = function() {
+                micButton.classList.add("recording");
+            };
 
-            chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
-            chatbox.scrollTop = chatbox.scrollHeight;
-
-            try {
-                let response = await fetch("https://foton-server.onrender.com/message", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        message: userMessage, 
-                        vehicle: selectedVehicle // Send selected vehicle name
-                    })
-                });
-                let data = await response.json();
-                chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
-                chatbox.scrollTop = chatbox.scrollHeight;
-            } catch (error) {
-                chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
-            }
-
-            inputField.value = "";
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === "Enter") {
+            recognition.onresult = function(event) {
+                let transcript = event.results[0][0].transcript;
+                document.getElementById("user-input").value = transcript;
+                isVoiceMessage = true;
                 sendMessage();
-            }
+            };
+
+            recognition.onerror = function() {
+                alert("Could not understand audio. Please try again.");
+            };
+
+            recognition.onend = function() {
+                micButton.classList.remove("recording");
+            };
+
+            recognition.start();
+        }
+
+        function speakText(text) {
+            let speech = new SpeechSynthesisUtterance();
+            speech.text = text;
+            speech.lang = "en-US";
+            speech.rate = 1;
+            speech.pitch = 1;
+            window.speechSynthesis.speak(speech);
         }
     </script>
-
 </body>
 </html>
