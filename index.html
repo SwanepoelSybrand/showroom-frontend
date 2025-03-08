@@ -99,19 +99,34 @@
     </div>
 
     <script>
-        let images = ['assets/1.png', 'assets/2.png', 'assets/3.png', 'assets/4.png', 'assets/5.png'];
+        let images = [
+            { src: 'assets/1.png', name: "Foton Minibus" },
+            { src: 'assets/2.png', name: "Vehicle 2" },
+            { src: 'assets/3.png', name: "Vehicle 3" },
+            { src: 'assets/4.png', name: "Vehicle 4" },
+            { src: 'assets/5.png', name: "Vehicle 5" }
+        ];
+
         let currentIndex = 0;
         let carButton = document.getElementById("car-button");
+        let selectedVehicle = images[0].name; // Default to first vehicle
 
         function prevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            carButton.style.backgroundImage = `url('${images[currentIndex]}')`;
+            carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
+            selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
-            carButton.style.backgroundImage = `url('${images[currentIndex]}')`;
+            carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
+            selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
+
+        // Assign vehicle when clicking on the image
+        carButton.addEventListener("click", function() {
+            console.log("Selected vehicle:", selectedVehicle);
+        });
 
         async function sendMessage() {
             let inputField = document.getElementById("user-input");
@@ -126,7 +141,10 @@
                 let response = await fetch("https://foton-server.onrender.com/message", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: userMessage })
+                    body: JSON.stringify({ 
+                        message: userMessage, 
+                        vehicle: selectedVehicle // Send selected vehicle name
+                    })
                 });
                 let data = await response.json();
                 chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
@@ -147,4 +165,3 @@
 
 </body>
 </html>
-
