@@ -18,14 +18,21 @@
         #button-container {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
+            align-items: center;
             padding: 20px;
+        }
+
+        .arrow-button {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
         }
 
         .car-button {
             width: 180px;
             height: 100px;
-            margin: 10px;
             border: none;
             background-size: cover;
             background-position: center;
@@ -76,13 +83,11 @@
 </head>
 <body>
 
-    <!-- Buttons -->
+    <!-- Buttons with Arrows -->
     <div id="button-container">
-        <button class="car-button" style="background-image: url('assets/1.png');"></button>
-        <button class="car-button" style="background-image: url('assets/2.png');"></button>
-        <button class="car-button" style="background-image: url('assets/3.png');"></button>
-        <button class="car-button" style="background-image: url('assets/4.png');"></button>
-        <button class="car-button" style="background-image: url('assets/5.png');"></button>
+        <button class="arrow-button" onclick="prevImage()">⬅️</button>
+        <button id="car-button" class="car-button" style="background-image: url('assets/1.png');"></button>
+        <button class="arrow-button" onclick="nextImage()">➡️</button>
     </div>
 
     <!-- Chatbox -->
@@ -94,6 +99,20 @@
     </div>
 
     <script>
+        let images = ['assets/1.png', 'assets/2.png', 'assets/3.png', 'assets/4.png', 'assets/5.png'];
+        let currentIndex = 0;
+        let carButton = document.getElementById("car-button");
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            carButton.style.backgroundImage = `url('${images[currentIndex]}')`;
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            carButton.style.backgroundImage = `url('${images[currentIndex]}')`;
+        }
+
         async function sendMessage() {
             let inputField = document.getElementById("user-input");
             let chatbox = document.getElementById("chatbox");
@@ -128,3 +147,4 @@
 
 </body>
 </html>
+
