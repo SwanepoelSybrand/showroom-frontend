@@ -79,6 +79,13 @@
             outline: none;
             font-size: 16px;
         }
+
+        /* Microphone Icon */
+        #mic-button {
+            cursor: pointer;
+            font-size: 24px;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -93,9 +100,10 @@
     <!-- Chatbox -->
     <div id="chatbox"></div>
 
-    <!-- Input Field -->
+    <!-- Input Field with Microphone Icon -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button id="mic-button" onclick="startRecording()">🎤</button>
     </div>
 
     <script>
@@ -122,11 +130,6 @@
             carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
             selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
-
-        // Assign vehicle when clicking on the image
-        carButton.addEventListener("click", function() {
-            console.log("Selected vehicle:", selectedVehicle);
-        });
 
         // Preventing double calling of sendMessage
         let isSending = false;
@@ -158,6 +161,9 @@
                 let data = await response.json();
                 chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
+
+                // Read aloud the response using TTS
+                readAloud(data.reply.join(' '));
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
             }
@@ -170,6 +176,37 @@
             if (event.key === "Enter") {
                 sendMessage();
             }
+        }
+
+        // Microphone Recording
+        let recognition;
+        let isRecording = false;
+
+        function startRecording() {
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+                return;
+            }
+
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.onstart = () => { isRecording = true; };
+            recognition.onend = () => { isRecording = false; };
+            recognition.onresult = (event) => {
+                let transcript = event.results[0][0].transcript;
+                document.getElementById("user-input").value = transcript;
+                sendMessage();
+            };
+
+            recognition.start();
+        }
+
+        // Read aloud function
+        function readAloud(text) {
+            let msg = new SpeechSynthesisUtterance(text);
+            msg.lang = "en-US";
+            window.speechSynthesis.speak(msg);
         }
     </script>
 
