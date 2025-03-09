@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale: 1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Human Motors Welkom</title>
     <style>
         body { 
@@ -79,13 +79,6 @@
             outline: none;
             font-size: 16px;
         }
-
-        /* Microphone Icon */
-        #mic-button {
-            cursor: pointer;
-            font-size: 24px;
-            margin-left: 10px;
-        }
     </style>
 </head>
 <body>
@@ -100,19 +93,18 @@
     <!-- Chatbox -->
     <div id="chatbox"></div>
 
-    <!-- Input Field with Microphone Icon -->
+    <!-- Input Field -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-        <button id="mic-button" onclick="startRecording()">🎤</button>
     </div>
 
     <script>
         let images = [
             { src: 'assets/1.png', name: "Foton Minibus" },
-            { src: 'assets/2.png', name: "Vehicle 2" },
-            { src: 'assets/3.png', name: "Vehicle 3" },
-            { src: 'assets/4.png', name: "Vehicle 4" },
-            { src: 'assets/5.png', name: "Vehicle 5" }
+            { src: 'assets/2.png', name: "Truckmate" },
+            { src: 'assets/3.png', name: "Panel Van" },
+            { src: 'assets/4.png', name: "Tunland G7 Single cab" },
+            { src: 'assets/5.png', name: "Tunland G7 Double cab" }
         ];
 
         let currentIndex = 0;
@@ -121,30 +113,26 @@
 
         function prevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
+            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')";
             selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
-            carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
+            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')";
             selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
 
-        // Preventing double calling of sendMessage
-        let isSending = false;
+        // Assign vehicle when clicking on the image
+        carButton.addEventListener("click", function() {
+            console.log("Selected vehicle:", selectedVehicle);
+        });
 
         async function sendMessage() {
-            if (isSending) return;  // Prevent multiple triggers
-            isSending = true; // Locking the function while sending message
-
             let inputField = document.getElementById("user-input");
             let chatbox = document.getElementById("chatbox");
             let userMessage = inputField.value.trim();
-            if (userMessage === "") {
-                isSending = false; // Unlock after check
-                return;
-            }
+            if (userMessage === "") return;
 
             chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -161,52 +149,17 @@
                 let data = await response.json();
                 chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
-
-                // Read aloud the response using TTS
-                readAloud(data.reply.join(' '));
             } catch (error) {
                 chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
             }
 
             inputField.value = "";
-            isSending = false; // Unlock after sending message
         }
 
         function handleKeyPress(event) {
             if (event.key === "Enter") {
                 sendMessage();
             }
-        }
-
-        // Microphone Recording
-        let recognition;
-        let isRecording = false;
-
-        function startRecording() {
-            if (isRecording) {
-                recognition.stop();
-                isRecording = false;
-                return;
-            }
-
-            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-            recognition.onstart = () => { isRecording = true; };
-            recognition.onend = () => { isRecording = false; };
-            recognition.onresult = (event) => {
-                let transcript = event.results[0][0].transcript;
-                document.getElementById("user-input").value = transcript;
-                sendMessage();
-            };
-
-            recognition.start();
-        }
-
-        // Read aloud function
-        function readAloud(text) {
-            let msg = new SpeechSynthesisUtterance(text);
-            msg.lang = "en-US";
-            window.speechSynthesis.speak(msg);
         }
     </script>
 
