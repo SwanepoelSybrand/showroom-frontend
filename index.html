@@ -14,6 +14,7 @@
             background-size: cover;
         }
 
+        /* Button Container */
         #button-container {
             display: flex;
             justify-content: center;
@@ -44,6 +45,7 @@
             transform: scale(1.1);
         }
 
+        /* Chatbox */
         #chatbox {
             width: 90%;
             max-width: 400px;
@@ -57,6 +59,7 @@
             text-align: left;
         }
 
+        /* Input Field */
         #input-container {
             width: 90%;
             max-width: 400px;
@@ -76,109 +79,81 @@
             outline: none;
             font-size: 16px;
         }
-
-        #send-button {
-            background: blue;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-left: 10px;
-        }
-
-        #user-form {
-            margin: 20px auto;
-            width: 90%;
-            max-width: 400px;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
-        }
-
-        #user-form input, #user-form button {
-            width: calc(100% - 20px);
-            margin: 10px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        #user-form button {
-            background: blue;
-            color: white;
-            cursor: pointer;
-        }
-
-        #email-notification {
-            display: none;
-            color: green;
-            font-size: 16px;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
+
+    <!-- Buttons with Arrows -->
     <div id="button-container">
         <button class="arrow-button" onclick="prevImage()">⬅️</button>
         <button id="car-button" class="car-button" style="background-image: url('assets/1.png');"></button>
         <button class="arrow-button" onclick="nextImage()">➡️</button>
     </div>
 
+    <!-- Chatbox -->
     <div id="chatbox"></div>
 
+    <!-- Input Field -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-        <button id="send-button" onclick="sendMessage()">Send</button>
     </div>
-
-    <form id="user-form">
-        <input type="text" id="user-name" placeholder="Enter your name" required>
-        <input type="email" id="user-email" placeholder="Enter your email" required>
-        <button type="button" onclick="sendEmail()">Send Email</button>
-        <div id="email-notification">Email sent successfully!</div>
-    </form>
 
     <script>
         let images = [
             { src: 'assets/1.png', name: "Foton Minibus" },
-            { src: 'assets/2.png', name: "Truckmate" },
-            { src: 'assets/3.png', name: "Panel Van" },
-            { src: 'assets/4.png', name: "Tunland G7 Single cab" },
-            { src: 'assets/5.png', name: "Tunland G7 Double cab" }
+            { src: 'assets/2.png', name: "Vehicle 2" },
+            { src: 'assets/3.png', name: "Vehicle 3" },
+            { src: 'assets/4.png', name: "Vehicle 4" },
+            { src: 'assets/5.png', name: "Vehicle 5" }
         ];
 
         let currentIndex = 0;
         let carButton = document.getElementById("car-button");
-        let selectedVehicle = images[0].name;
+        let selectedVehicle = images[0].name; // Default to first vehicle
 
         function prevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')"; 
-            selectedVehicle = images[currentIndex].name;
+            carButton.style.backgroundImage = url('${images[currentIndex].src}');
+            selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
-            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')"; 
-            selectedVehicle = images[currentIndex].name;
+            carButton.style.backgroundImage = url('${images[currentIndex].src}');
+            selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
 
-        function sendMessage() {
-            let input = document.getElementById("user-input").value;
-            if (input.trim() === "") return;
+        // Assign vehicle when clicking on the image
+        carButton.addEventListener("click", function() {
+            console.log("Selected vehicle:", selectedVehicle);
+        });
 
+        async function sendMessage() {
+            let inputField = document.getElementById("user-input");
             let chatbox = document.getElementById("chatbox");
-            let message = document.createElement("div");
-            message.textContent = "You: " + input;
-            chatbox.appendChild(message);
+            let userMessage = inputField.value.trim();
+            if (userMessage === "") return;
 
-            document.getElementById("user-input").value = "";
+            chatbox.innerHTML += <p><strong>You:</strong> ${userMessage}</p>;
             chatbox.scrollTop = chatbox.scrollHeight;
+
+            try {
+                let response = await fetch("https://foton-server.onrender.com/message", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        message: userMessage, 
+                        vehicle: selectedVehicle // Send selected vehicle name
+                    })
+                });
+                let data = await response.json();
+                chatbox.innerHTML += <p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            } catch (error) {
+                chatbox.innerHTML += <p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>;
+            }
+
+            inputField.value = "";
         }
 
         function handleKeyPress(event) {
@@ -186,20 +161,7 @@
                 sendMessage();
             }
         }
-
-        async function sendEmail() {
-            let name = document.getElementById("user-name").value;
-            let email = document.getElementById("user-email").value;
-            let notification = document.getElementById("email-notification");
-
-            if (!name || !email) {
-                alert("Please enter both name and email.");
-                return;
-            }
-
-            let emailData = { name, email, vehicle: selectedVehicle };
-            notification.style.display = "block";
-        }
     </script>
+
 </body>
 </html>
