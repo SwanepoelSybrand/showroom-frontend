@@ -77,6 +77,17 @@
             font-size: 16px;
         }
 
+        #send-button {
+            background: blue;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
         /* Form Styling */
         #user-form {
             margin: 20px auto;
@@ -103,6 +114,14 @@
             color: white;
             cursor: pointer;
         }
+
+        /* Email Notification */
+        #email-notification {
+            display: none;
+            color: green;
+            font-size: 16px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -117,12 +136,14 @@
 
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button id="send-button" onclick="sendMessage()">Send</button>
     </div>
 
     <form id="user-form">
         <input type="text" id="user-name" placeholder="Enter your name" required>
         <input type="email" id="user-email" placeholder="Enter your email" required>
         <button type="button" onclick="sendEmail()">Send Email</button>
+        <div id="email-notification">Email sent successfully!</div>
     </form>
 
     <script>
@@ -140,19 +161,40 @@
 
         function prevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')";
+            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')"; 
             selectedVehicle = images[currentIndex].name;
         }
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
-            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')";
+            carButton.style.backgroundImage = "url('" + images[currentIndex].src + "')"; 
             selectedVehicle = images[currentIndex].name;
+        }
+
+        function sendMessage() {
+            let input = document.getElementById("user-input").value;
+            if (input.trim() === "") return;
+
+            let chatbox = document.getElementById("chatbox");
+            let message = document.createElement("div");
+            message.textContent = "You: " + input;
+            chatbox.appendChild(message);
+
+            document.getElementById("user-input").value = ""; // Clear input
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
         }
 
         async function sendEmail() {
             let name = document.getElementById("user-name").value;
             let email = document.getElementById("user-email").value;
+            let notification = document.getElementById("email-notification");
+
             if (!name || !email) {
                 alert("Please enter both name and email.");
                 return;
@@ -170,8 +212,12 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(emailData)
                 });
+
                 let data = await response.json();
-                alert("Email sent successfully!");
+                notification.style.display = "block"; // Show notification
+                setTimeout(() => {
+                    notification.style.display = "none"; // Hide after 3 seconds
+                }, 3000);
             } catch (error) {
                 alert("Error sending email. Please try again.");
             }
