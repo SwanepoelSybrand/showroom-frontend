@@ -44,16 +44,21 @@
             transform: scale(1.1);
         }
 
-        #chatbox, #user-info {
-            width: 90%;
-            max-width: 400px;
-            margin: 10px auto;
-            background: white;
-            border-radius: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
-        }
+        #chatbox {
+    width: 90%;
+    max-width: 400px;
+    margin: 10px auto;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+    height: 300px;  /* Fixed height */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    display: flex;
+    flex-direction: column;
+}
+
 
         #input-container {
             width: 90%;
