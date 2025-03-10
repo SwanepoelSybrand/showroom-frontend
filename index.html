@@ -88,7 +88,6 @@
             margin-left: 10px;
         }
 
-        /* Form Styling */
         #user-form {
             margin: 20px auto;
             width: 90%;
@@ -115,7 +114,6 @@
             cursor: pointer;
         }
 
-        /* Email Notification */
         #email-notification {
             display: none;
             color: green;
@@ -125,7 +123,6 @@
     </style>
 </head>
 <body>
-
     <div id="button-container">
         <button class="arrow-button" onclick="prevImage()">⬅️</button>
         <button id="car-button" class="car-button" style="background-image: url('assets/1.png');"></button>
@@ -180,8 +177,8 @@
             message.textContent = "You: " + input;
             chatbox.appendChild(message);
 
-            document.getElementById("user-input").value = ""; // Clear input
-            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+            document.getElementById("user-input").value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
 
         function handleKeyPress(event) {
@@ -200,27 +197,8 @@
                 return;
             }
 
-            let emailData = {
-                name: name,
-                email: email,
-                vehicle: selectedVehicle
-            };
-
-            try {
-                let response = await fetch("https://your-email-server.com/send", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(emailData)
-                });
-
-                let data = await response.json();
-                notification.style.display = "block"; // Show notification
-                setTimeout(() => {
-                    notification.style.display = "none"; // Hide after 3 seconds
-                }, 3000);
-            } catch (error) {
-                alert("Error sending email. Please try again.");
-            }
+            let emailData = { name, email, vehicle: selectedVehicle };
+            notification.style.display = "block";
         }
     </script>
 </body>
