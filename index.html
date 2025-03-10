@@ -113,13 +113,13 @@
 
         function prevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            carButton.style.backgroundImage = url('${images[currentIndex].src}');
+            carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
             selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
-            carButton.style.backgroundImage = url('${images[currentIndex].src}');
+            carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
             selectedVehicle = images[currentIndex].name; // Update selected vehicle
         }
 
@@ -134,7 +134,7 @@
             let userMessage = inputField.value.trim();
             if (userMessage === "") return;
 
-            chatbox.innerHTML += <p><strong>You:</strong> ${userMessage}</p>;
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
             chatbox.scrollTop = chatbox.scrollHeight;
 
             try {
@@ -147,10 +147,10 @@
                     })
                 });
                 let data = await response.json();
-                chatbox.innerHTML += <p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>;
+                chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
             } catch (error) {
-                chatbox.innerHTML += <p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>;
+                chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
             }
 
             inputField.value = "";
