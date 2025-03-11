@@ -188,9 +188,9 @@
             alert("Please enter your name and cellphone number.");
             return;
         }
-        let message = `Hello, my name is ${name}. I am interested in ${selectedVehicle}.`;
-        let whatsappURL = `https://wa.me/yourwhatsappnumber?text=${encodeURIComponent(message)}`;
-        window.open(whatsappURL, "_blank");
+        let message = `Hello, my name is ${encodeURIComponent(name)}. I am interested in ${encodeURIComponent(selectedVehicle)}.`;
+        let whatsappURL = `https://wa.me/?text=${message}`;
+        window.open(whatsappURL, '_blank');
     }
     </script>
 </body>
