@@ -122,21 +122,7 @@
         currentIndex = (currentIndex + 1) % images.length;
         carButton.style.backgroundImage = `url('${images[currentIndex].src}')`;
         selectedVehicle = images[currentIndex].name;
-   
-    function sendEmail() {
-        let name = document.getElementById("customer-name").value.trim();
-        let phone = document.getElementById("customer-phone").value.trim();
-        if (name === "" || phone === "") {
-            alert("Please enter your name and cellphone number.");
-            return;
-        }
-
-        let subject = "Customer Inquiry";
-        let body = `Hello, my name is ${name}. I am interested in ${selectedVehicle}. My contact number is ${phone}.`;
-        let mailtoLink = `mailto:sybrandswanepoel@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
-    
-   }
+    }
 
     // Click to confirm vehicle selection
     carButton.addEventListener("click", function() {
