@@ -106,6 +106,7 @@
     <!-- User Input -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Send</button>
     </div>
 
     <!-- Contact Details & WhatsApp Button -->
@@ -175,6 +176,7 @@
 
     function handleKeyPress(event) {
         if (event.key === "Enter") {
+            event.preventDefault(); 
             sendMessage();
         }
     }
@@ -187,10 +189,9 @@
             return;
         }
         let message = `Hello, my name is ${name}. I am interested in ${selectedVehicle}.`;
-        let whatsappURL = `https://wa.me/27818840534?text=${encodeURIComponent(message)}`;
-        window.open(whatsappURL, '_blank');
+        let whatsappURL = `https://wa.me/yourwhatsappnumber?text=${encodeURIComponent(message)}`;
+        window.open(whatsappURL, "_blank");
     }
-</script>
-
+    </script>
 </body>
 </html>
