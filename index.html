@@ -59,24 +59,34 @@
             text-align: left;
         }
 
-        /* Input Field */
-        #input-container {
+        /* Input Fields */
+        #input-container, #contact-container {
             width: 90%;
             max-width: 400px;
             margin: 10px auto;
             display: flex;
+            flex-direction: column;
             background: white;
             border-radius: 25px;
             padding: 10px;
             border: 1px solid #ccc;
-            align-items: center;
         }
 
-        #user-input {
-            flex: 1;
+        #user-input, #customer-name, #customer-phone {
             border: none;
             padding: 10px;
             outline: none;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        #send-button {
+            background-color: #25D366;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-size: 16px;
         }
     </style>
@@ -93,9 +103,16 @@
     <!-- Chatbox -->
     <div id="chatbox"></div>
 
-    <!-- Input Field -->
+    <!-- User Input -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+    </div>
+
+    <!-- Contact Details & WhatsApp Button -->
+    <div id="contact-container">
+        <input type="text" id="customer-name" placeholder="Your Name">
+        <input type="text" id="customer-phone" placeholder="Cellphone Number">
+        <button id="send-button" onclick="sendWhatsApp()">Send via WhatsApp</button>
     </div>
 
     <script>
@@ -104,13 +121,12 @@
         { src: 'assets/2.png', name: "eTruckmate" },
         { src: 'assets/3.png', name: "eView Panel Van" },
         { src: 'assets/4.png', name: "Tunland G7 Single Cab" },
-        { src: 'assets/5.png', name: "tunland G& Double Cab" }
+        { src: 'assets/5.png', name: "Tunland G7 Double Cab" }
     ];
-
 
     let currentIndex = 0;
     let carButton = document.getElementById("car-button");
-    let selectedVehicle = images[0].name; // Default to first vehicle
+    let selectedVehicle = images[0].name;
 
     function prevImage() {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
@@ -124,7 +140,6 @@
         selectedVehicle = images[currentIndex].name;
     }
 
-    // Click to confirm vehicle selection
     carButton.addEventListener("click", function() {
         let chatbox = document.getElementById("chatbox");
         chatbox.innerHTML += `<p><strong>Mary:</strong> You selected ${selectedVehicle}. Feel free to ask me anything about it!</p>`;
@@ -145,7 +160,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     message: userMessage, 
-                    vehicle: selectedVehicle // Send selected vehicle name
+                    vehicle: selectedVehicle
                 })
             });
             let data = await response.json();
@@ -163,8 +178,19 @@
             sendMessage();
         }
     }
-</script>
 
+    function sendWhatsApp() {
+        let name = document.getElementById("customer-name").value.trim();
+        let phone = document.getElementById("customer-phone").value.trim();
+        if (name === "" || phone === "") {
+            alert("Please enter your name and cellphone number.");
+            return;
+        }
+        let message = `Hello, my name is ${name}. I am interested in ${selectedVehicle}.`;
+        let whatsappURL = `https://wa.me/27818840534?text=${encodeURIComponent(message)}`;
+        window.open(whatsappURL, '_blank');
+    }
+</script>
 
 </body>
 </html>
