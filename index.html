@@ -79,6 +79,32 @@
             outline: none;
             font-size: 16px;
         }
+
+        /* Contact Details */
+        #contact-container input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Button to activate contact details */
+        #interest-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        #interest-button:active {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +122,11 @@
     <!-- Input Field -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeydown="handleKeyPress(event)">
+    </div>
+
+    <!-- 'I am Interested' Button -->
+    <div>
+        <button id="interest-button" onclick="activateContactFields()">I am Interested</button>
     </div>
 
     <!-- Contact Details & Email Button -->
@@ -171,6 +202,14 @@
             sendMessage();  // Sends the message
             document.getElementById("user-input").focus();  // Keep focus on the input field after sending the message
         }
+    }
+
+    function activateContactFields() {
+        // When the button is clicked, enable the contact fields
+        document.getElementById("customer-name").style.pointerEvents = "auto";
+        document.getElementById("customer-phone").style.pointerEvents = "auto";
+        document.getElementById("customer-name").style.opacity = "1";
+        document.getElementById("customer-phone").style.opacity = "1";
     }
 
     function sendEmail() {
