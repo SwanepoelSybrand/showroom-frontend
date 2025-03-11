@@ -79,33 +79,6 @@
             outline: none;
             font-size: 16px;
         }
-
-        /* Contact Details & Email Button */
-        #contact-container {
-            margin-top: 20px;
-        }
-
-        #customer-name, #customer-phone {
-            width: 90%;
-            max-width: 400px;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        #send-button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #send-button:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
@@ -192,9 +165,11 @@
     }
 
     function handleKeyPress(event) {
+        // Prevent the default behavior of the Enter key (to avoid jumping to the next line)
         if (event.key === "Enter") {
-            event.preventDefault();  // Prevents form submission or page reload
-            sendMessage();
+            event.preventDefault();  // Prevents form submission or cursor moving to the next line
+            sendMessage();  // Sends the message
+            document.getElementById("user-input").focus();  // Keep focus on the input field after sending the message
         }
     }
 
