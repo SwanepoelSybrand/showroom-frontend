@@ -166,10 +166,12 @@
     }
 
     function handleKeyPress(event) {
-        if (event.key === "Enter") {
-            sendMessage();
-        }
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevents jumping to the next input field on mobile
+        sendMessage();
     }
+}
+
 
     function sendEmail() {
         let name = document.getElementById("customer-name").value.trim();
