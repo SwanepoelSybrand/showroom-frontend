@@ -109,11 +109,11 @@
         <button onclick="sendMessage()">Send</button>
     </div>
 
-    <!-- Contact Details & WhatsApp Button -->
+    <!-- Contact Details & Email Button -->
     <div id="contact-container">
         <input type="text" id="customer-name" placeholder="Your Name">
         <input type="text" id="customer-phone" placeholder="Cellphone Number">
-        <button id="send-button" onclick="sendWhatsApp()">Send via WhatsApp</button>
+        <button id="send-button" onclick="sendEmail()">Send via Email</button>
     </div>
 
     <script>
@@ -141,56 +141,18 @@
         selectedVehicle = images[currentIndex].name;
     }
 
-    carButton.addEventListener("click", function() {
-        let chatbox = document.getElementById("chatbox");
-        chatbox.innerHTML += `<p><strong>Mary:</strong> You selected ${selectedVehicle}. Feel free to ask me anything about it!</p>`;
-    });
-
-    async function sendMessage() {
-        let inputField = document.getElementById("user-input");
-        let chatbox = document.getElementById("chatbox");
-        let userMessage = inputField.value.trim();
-        if (userMessage === "") return;
-
-        chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
-        chatbox.scrollTop = chatbox.scrollHeight;
-
-        try {
-            let response = await fetch("https://foton-server.onrender.com/message", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    message: userMessage, 
-                    vehicle: selectedVehicle
-                })
-            });
-            let data = await response.json();
-            chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
-            chatbox.scrollTop = chatbox.scrollHeight;
-        } catch (error) {
-            chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
-        }
-
-        inputField.value = "";
-    }
-
-    function handleKeyPress(event) {
-        if (event.key === "Enter") {
-            event.preventDefault(); 
-            sendMessage();
-        }
-    }
-
-    function sendWhatsApp() {
+    function sendEmail() {
         let name = document.getElementById("customer-name").value.trim();
         let phone = document.getElementById("customer-phone").value.trim();
         if (name === "" || phone === "") {
             alert("Please enter your name and cellphone number.");
             return;
         }
-        let message = `Hello, my name is ${encodeURIComponent(name)}. I am interested in ${encodeURIComponent(selectedVehicle)}.`;
-        let whatsappURL = `https://wa.me/?text=${message}`;
-        window.open(whatsappURL, '_blank');
+
+        let subject = "Customer Inquiry";
+        let body = `Hello, my name is ${name}. I am interested in ${selectedVehicle}. My contact number is ${phone}.`;
+        let mailtoLink = `mailto:sybrandswanepoel@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
     }
     </script>
 </body>
