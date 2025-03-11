@@ -95,7 +95,7 @@
 
     <!-- Input Field -->
     <div id="input-container">
-        <input type="text" id="user-input" placeholder="Type a message...">
+        <input type="text" id="user-input" placeholder="Type a message..." onkeydown="handleKeyPress(event)">
     </div>
 
     <!-- Contact Details & Email Button -->
@@ -130,11 +130,10 @@
         selectedVehicle = images[currentIndex].name;
     }
 
-    // Click to confirm vehicle selection
     carButton.addEventListener("click", function() {
         let chatbox = document.getElementById("chatbox");
         chatbox.innerHTML += `<p><strong>Mary:</strong> You selected ${selectedVehicle}. Feel free to ask me anything about it!</p>`;
-        chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to latest message
+        chatbox.scrollTop = chatbox.scrollHeight;
     });
 
     async function sendMessage() {
@@ -152,12 +151,12 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     message: userMessage, 
-                    vehicle: selectedVehicle // Send selected vehicle name
+                    vehicle: selectedVehicle 
                 })
             });
             let data = await response.json();
             chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
-            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to latest message
+            chatbox.scrollTop = chatbox.scrollHeight;
         } catch (error) {
             chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
         }
@@ -165,12 +164,12 @@
         inputField.value = "";
     }
 
-    document.getElementById("user-input").addEventListener("keydown", function(event) {
+    function handleKeyPress(event) {
         if (event.key === "Enter") {
             event.preventDefault();
             sendMessage();
         }
-    });
+    }
 
     function sendEmail() {
         let name = document.getElementById("customer-name").value.trim();
@@ -186,5 +185,6 @@
         window.location.href = mailtoLink;
     }
     </script>
+
 </body>
 </html>
