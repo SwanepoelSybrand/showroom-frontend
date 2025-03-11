@@ -59,34 +59,24 @@
             text-align: left;
         }
 
-        /* Input Fields */
-        #input-container, #contact-container {
+        /* Input Field */
+        #input-container {
             width: 90%;
             max-width: 400px;
             margin: 10px auto;
             display: flex;
-            flex-direction: column;
             background: white;
             border-radius: 25px;
             padding: 10px;
             border: 1px solid #ccc;
+            align-items: center;
         }
 
-        #user-input, #customer-name, #customer-phone {
+        #user-input {
+            flex: 1;
             border: none;
             padding: 10px;
             outline: none;
-            font-size: 16px;
-            margin: 5px 0;
-        }
-
-        #send-button {
-            background-color: #25D366;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
             font-size: 16px;
         }
     </style>
@@ -103,17 +93,9 @@
     <!-- Chatbox -->
     <div id="chatbox"></div>
 
-    <!-- User Input -->
+    <!-- Input Field -->
     <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
-    <!-- Contact Details & Email Button -->
-    <div id="contact-container">
-        <input type="text" id="customer-name" placeholder="Your Name">
-        <input type="text" id="customer-phone" placeholder="Cellphone Number">
-        <button id="send-button" onclick="sendEmail()">Send via Email</button>
     </div>
 
     <script>
@@ -122,12 +104,13 @@
         { src: 'assets/2.png', name: "eTruckmate" },
         { src: 'assets/3.png', name: "eView Panel Van" },
         { src: 'assets/4.png', name: "Tunland G7 Single Cab" },
-        { src: 'assets/5.png', name: "Tunland G7 Double Cab" }
+        { src: 'assets/5.png', name: "tunland G& Double Cab" }
     ];
+
 
     let currentIndex = 0;
     let carButton = document.getElementById("car-button");
-    let selectedVehicle = images[0].name;
+    let selectedVehicle = images[0].name; // Default to first vehicle
 
     function prevImage() {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
@@ -141,19 +124,47 @@
         selectedVehicle = images[currentIndex].name;
     }
 
-    function sendEmail() {
-        let name = document.getElementById("customer-name").value.trim();
-        let phone = document.getElementById("customer-phone").value.trim();
-        if (name === "" || phone === "") {
-            alert("Please enter your name and cellphone number.");
-            return;
+    // Click to confirm vehicle selection
+    carButton.addEventListener("click", function() {
+        let chatbox = document.getElementById("chatbox");
+        chatbox.innerHTML += `<p><strong>Mary:</strong> You selected ${selectedVehicle}. Feel free to ask me anything about it!</p>`;
+    });
+
+    async function sendMessage() {
+        let inputField = document.getElementById("user-input");
+        let chatbox = document.getElementById("chatbox");
+        let userMessage = inputField.value.trim();
+        if (userMessage === "") return;
+
+        chatbox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+
+        try {
+            let response = await fetch("https://foton-server.onrender.com/message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    message: userMessage, 
+                    vehicle: selectedVehicle // Send selected vehicle name
+                })
+            });
+            let data = await response.json();
+            chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+        } catch (error) {
+            chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
         }
 
-        let subject = "Customer Inquiry";
-        let body = `Hello, my name is ${name}. I am interested in ${selectedVehicle}. My contact number is ${phone}.`;
-        let mailtoLink = `mailto:sybrandswanepoel@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
+        inputField.value = "";
     }
-    </script>
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+</script>
+
+
 </body>
 </html>
