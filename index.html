@@ -51,13 +51,18 @@
     </style>
 </head>
 <body>
-    <div id="chatbox" style="display:none;"></div>
-    <div id="input-container" style="display:none;">
+    <div id="chatbox"></div>
+    <div id="input-container">
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
     </div>
 
     <script>
         let selectedVehicle = "Foton Minibus"; 
+
+        window.onload = function() {
+            document.getElementById("chatbox").style.display = "block";
+            document.getElementById("input-container").style.display = "flex";
+        };
 
         async function sendMessage() {
             let inputField = document.getElementById("user-input");
