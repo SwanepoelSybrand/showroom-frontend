@@ -98,15 +98,21 @@
         <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
     </div>
 
+    <!-- Contact Details & Email Button -->
+    <div id="contact-container">
+        <input type="text" id="customer-name" placeholder="Your Name">
+        <input type="text" id="customer-phone" placeholder="Cellphone Number">
+        <button id="send-button" onclick="sendEmail()">Send via Email</button>
+    </div>
+
     <script>
-     let images = [
+    let images = [
         { src: 'assets/1.png', name: "Foton Minibus" },
         { src: 'assets/2.png', name: "eTruckmate" },
         { src: 'assets/3.png', name: "eView Panel Van" },
         { src: 'assets/4.png', name: "Tunland G7 Single Cab" },
-        { src: 'assets/5.png', name: "tunland G& Double Cab" }
+        { src: 'assets/5.png', name: "Tunland G7 Double Cab" }
     ];
-
 
     let currentIndex = 0;
     let carButton = document.getElementById("car-button");
@@ -128,6 +134,7 @@
     carButton.addEventListener("click", function() {
         let chatbox = document.getElementById("chatbox");
         chatbox.innerHTML += `<p><strong>Mary:</strong> You selected ${selectedVehicle}. Feel free to ask me anything about it!</p>`;
+        chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to latest message
     });
 
     async function sendMessage() {
@@ -150,7 +157,7 @@
             });
             let data = await response.json();
             chatbox.innerHTML += `<p><strong>Mary:</strong> ${data.reply.join('<br>')}</p>`;
-            chatbox.scrollTop = chatbox.scrollHeight;
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to latest message
         } catch (error) {
             chatbox.innerHTML += `<p style="color:red;"><strong>Mary:</strong> Error contacting server.</p>`;
         }
@@ -163,8 +170,21 @@
             sendMessage();
         }
     }
-</script>
 
+    function sendEmail() {
+        let name = document.getElementById("customer-name").value.trim();
+        let phone = document.getElementById("customer-phone").value.trim();
+        if (name === "" || phone === "") {
+            alert("Please enter your name and cellphone number.");
+            return;
+        }
+
+        let subject = "Customer Inquiry";
+        let body = `Hello, my name is ${name}. I am interested in ${selectedVehicle}. My contact number is ${phone}.`;
+        let mailtoLink = `mailto:sybrandswanepoel@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
+    }
+    </script>
 
 </body>
 </html>
