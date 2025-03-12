@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Human Motors Welkom</title>
+
+    <!-- Google Analytics Tracking Code -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=10380138686"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '10380138686');
+    </script>
+
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -196,16 +207,14 @@
     }
 
     function handleKeyPress(event) {
-        // Prevent the default behavior of the Enter key (to avoid jumping to the next line)
         if (event.key === "Enter") {
-            event.preventDefault();  // Prevents form submission or cursor moving to the next line
-            sendMessage();  // Sends the message
-            document.getElementById("user-input").focus();  // Keep focus on the input field after sending the message
+            event.preventDefault();
+            sendMessage();
+            document.getElementById("user-input").focus();
         }
     }
 
     function activateContactFields() {
-        // When the button is clicked, enable the contact fields
         document.getElementById("customer-name").style.pointerEvents = "auto";
         document.getElementById("customer-phone").style.pointerEvents = "auto";
         document.getElementById("customer-name").style.opacity = "1";
