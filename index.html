@@ -234,6 +234,17 @@
         let mailtoLink = `mailto:sybrandswanepoel@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
     }
+
+    // Function to display greeting on page load
+    function displayGreeting() {
+        let chatbox = document.getElementById("chatbox");
+        chatbox.innerHTML += `<p><strong>Mary:</strong> Welcome to Human Motors Welkom! I'm Mary, your virtual assistant. Select a vehicle or ask me anything about our cars.</p>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    // Run greeting function when the page loads
+    window.onload = displayGreeting;
+
     </script>
 
 </body>
