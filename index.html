@@ -3,100 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Human Motors Welkom</title>
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCYJN74VP7"></script>
+    <title>Chatbot</title>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-QCYJN74VP7');
-    </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+        (function() {
+            emailjs.init("<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
     <script>
-        emailjs.init("FBv_Eq-ltQ3fP461H");
+        (function() {
+            emailjs.init("<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init("FBv_Eq-ltQ3fP461H"); // Replace with your EmailJS user ID
+        })();
     </script>
-
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: url("assets/ford-logo.png") no-repeat center center fixed; background-size: cover; }
-        #button-container { display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .arrow-button { font-size: 24px; background: none; border: none; cursor: pointer; margin: 10px; }
-        .car-button { width: 180px; height: 100px; border: none; background-size: cover; cursor: pointer; border-radius: 10px; }
-        #chatbox { width: 90%; max-width: 400px; height: 300px; margin: 0 auto; background: white; overflow-y: auto; padding: 10px; border: 1px solid #ccc; }
-        #input-container { width: 90%; max-width: 400px; margin: 10px auto; display: flex; border: 1px solid #ccc; }
-        #user-input { flex: 1; border: none; padding: 10px; outline: none; font-size: 16px; }
-        #contact-container input, #send-button { margin: 10px 0; padding: 10px; width: 100%; border-radius: 25px; border: 1px solid #ccc; }
-        #interest-button { background-color: #4CAF50; color: white; padding: 10px; border: none; border-radius: 25px; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .chatbox {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        button {
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkblue;
+        }
     </style>
 </head>
 <body>
-    <div id="button-container">
-        <button class="arrow-button" onclick="prevImage()">⬅️</button>
-        <button id="car-button" class="car-button" style="background-image: url('assets/1.png');"></button>
-        <button class="arrow-button" onclick="nextImage()">➡️</button>
-    </div>
-    
-    <div id="chatbox"></div>
-    <div id="input-container">
-        <input type="text" id="user-input" placeholder="Type a message..." onkeydown="handleKeyPress(event)">
-    </div>
-    <button id="interest-button" onclick="activateContactFields()">I am Interested</button>
-    <div id="contact-container">
-        <input type="text" id="customer-name" placeholder="Your Name">
-        <input type="text" id="customer-phone" placeholder="Cellphone Number">
-        <button id="send-button" onclick="sendEmail()">Send via Email</button>
+    <div class="chat-container">
+        <div class="chatbox" id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
 
     <script>
-    let images = [
-        { src: 'assets/1.png', name: "Foton Minibus" },
-        { src: 'assets/2.png', name: "eTruckmate" },
-        { src: 'assets/3.png', name: "eView Panel Van" },
-        { src: 'assets/4.png', name: "Tunland G7 Single Cab" },
-        { src: 'assets/5.png', name: "Tunland G7 Double Cab" },
-        { src: 'assets/6.png', name: "Asambe Taxi" }
-    ];
-    let currentIndex = 0;
-    let selectedVehicle = images[0].name;
-
-    function prevImage() {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        document.getElementById("car-button").style.backgroundImage = `url('${images[currentIndex].src}')`;
-        selectedVehicle = images[currentIndex].name;
-    }
-
-    function nextImage() {
-        currentIndex = (currentIndex + 1) % images.length;
-        document.getElementById("car-button").style.backgroundImage = `url('${images[currentIndex].src}')`;
-        selectedVehicle = images[currentIndex].name;
-    }
-
-    function sendEmail() {
-        let name = document.getElementById("customer-name").value.trim();
-        let phone = document.getElementById("customer-phone").value.trim();
-        if (name === "" || phone === "") {
-            alert("Please enter your name and cellphone number.");
-            return;
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
         }
 
-        let templateParams = {
-            customer_name: name,
-            customer_phone: phone,
-            vehicle_interest: selectedVehicle
-        };
+        function sendMessage() {
+            let userInput = document.getElementById("user-input");
+            let chatbox = document.getElementById("chatbox");
 
-        emailjs.send("service_dkrqg3d", "template_h4cagb7", templateParams)
-            .then(response => alert("Email sent successfully!"))
-            .catch(error => alert("Failed to send email: " + error.text));
-    }
+            if (userInput.value.trim() === "") return; // Don't send empty messages
 
-    function displayGreeting() {
-        let chatbox = document.getElementById("chatbox");
-        chatbox.innerHTML += `<p><strong>Mary:</strong> Welcome to Human Motors Welkom! I'm Mary. Please select a vehicle and ask any questions. When satisfied, press the green button, type your details, and send an email. I'll let someone contact you.</p>`;
-    }
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userInput.value}</p>`;
+            sendEmail(userInput.value);
+            userInput.value = ""; // Clear input field
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to the bottom
+        }
 
-    window.onload = displayGreeting;
+        function sendEmail(message) {
+            let templateParams = {
+                message: message
+            };
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                .then(function(response) {
+                    console.log("Email sent successfully", response.status, response.text);
+                }, function(error) {
+                    console.error("Failed to send email", error);
+                });
+        }
+    </script>
+</body>
+</html>
+"); // Replace with your EmailJS user ID
+        })();
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .chatbox {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        button {
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chatbox" id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            let userInput = document.getElementById("user-input");
+            let chatbox = document.getElementById("chatbox");
+
+            if (userInput.value.trim() === "") return; // Don't send empty messages
+
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userInput.value}</p>`;
+            sendEmail(userInput.value);
+            userInput.value = ""; // Clear input field
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to the bottom
+        }
+
+        function sendEmail(message) {
+            let templateParams = {
+                message: message
+            };
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                .then(function(response) {
+                    console.log("Email sent successfully", response.status, response.text);
+                }, function(error) {
+                    console.error("Failed to send email", error);
+                });
+        }
+    </script>
+</body>
+</html>
+"); // Replace with your EmailJS user ID
+        })();
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .chatbox {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        button {
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chatbox" id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            let userInput = document.getElementById("user-input");
+            let chatbox = document.getElementById("chatbox");
+
+            if (userInput.value.trim() === "") return; // Don't send empty messages
+
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userInput.value}</p>`;
+            sendEmail(userInput.value);
+            userInput.value = ""; // Clear input field
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to the bottom
+        }
+
+        function sendEmail(message) {
+            let templateParams = {
+                message: message
+            };
+            emailjs.send("service_dkrqg3d", "template_h4cagb7", templateParams)
+                .then(function(response) {
+                    console.log("Email sent successfully", response.status, response.text);
+                }, function(error) {
+                    console.error("Failed to send email", error);
+                });
+        }
     </script>
 </body>
 </html>
