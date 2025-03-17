@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Human Motors Welkom</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init("FBv_Eq-ltQ3fP461H"); // Replace with your EmailJS user ID
+        })();
+    </script>
 
     <!-- Google Analytics Tracking Code -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCYJN74VP7"></script>
@@ -225,17 +231,28 @@
 
     function sendEmail() {
         let name = document.getElementById("customer-name").value.trim();
-        let phone = document.getElementById("customer-phone").value.trim();
-        if (name === "" || phone === "") {
-            alert("Please enter your name and cellphone number.");
-            return;
-        }
-
-        let subject = "Customer Inquiry";
-        let body = `Hello, my name is ${name}. I am interested in ${selectedVehicle}. My contact number is ${phone}.`;
-        let mailtoLink = `mailto:sybrandswanepoel@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
+    let phone = document.getElementById("customer-phone").value.trim();
+    
+    if (name === "" || phone === "") {
+        alert("Please enter your name and cellphone number.");
+        return;
     }
+
+    let templateParams = {
+        user_name: name,
+        user_phone: phone,
+        selected_vehicle: selectedVehicle
+    };
+
+    emailjs.send("service_dkrqg3d", "template_h4cagb7", templateParams, "FBv_Eq-ltQ3fP461H")
+    .then(response => {
+        alert("Email sent successfully!");
+    })
+    .catch(error => {
+        alert("Failed to send email. Please try again.");
+        console.error("EmailJS error:", error);
+    });
+}
 
     // Function to display greeting on page load
     function displayGreeting() {
